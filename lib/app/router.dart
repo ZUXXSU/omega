@@ -17,6 +17,9 @@ import '../features/settings/presentation/screens/privacy_settings_screen.dart';
 import '../features/settings/presentation/screens/advanced_settings_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/media/presentation/screens/media_viewer_screen.dart';
+import '../features/qr/presentation/screens/qr_scanner_screen.dart';
+import '../features/qr/presentation/screens/qr_display_screen.dart';
+import '../features/chat/presentation/screens/group/group_create_screen.dart';
 import '../core/constants/route_constants.dart';
 
 part 'router.g.dart';
@@ -95,6 +98,33 @@ GoRouter router(RouterRef ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: RouteConstants.qrScanner,
+        builder: (context, state) {
+          final mode = state.uri.queryParameters['mode'];
+          return QrScannerScreen(
+            mode: switch (mode) {
+              'group' => QrScanMode.groupInvite,
+              'account' => QrScanMode.accountLogin,
+              'backup' => QrScanMode.backup,
+              _ => QrScanMode.contact,
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/qr-display',
+        builder: (context, state) {
+          final chatId = state.uri.queryParameters['chatId'] != null
+              ? int.tryParse(state.uri.queryParameters['chatId']!)
+              : null;
+          return QrDisplayScreen(chatId: chatId);
+        },
+      ),
+      GoRoute(
+        path: RouteConstants.groupCreate,
+        builder: (context, state) => const GroupCreateScreen(),
       ),
       GoRoute(
         path: RouteConstants.mediaViewer,

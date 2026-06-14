@@ -62,6 +62,10 @@ dependencies:
   share_plus: ^10.1.4
   package_info_plus: ^8.3.0
   device_info_plus: ^11.4.0
+  mobile_scanner: ^6.0.4
+  qr_flutter: ^4.1.0
+  shared_preferences: ^2.3.4
+  image_cropper: ^8.0.2
 
   # UI
   flutter_svg: ^2.0.17

@@ -1,135 +1,75 @@
 # Omega — Implementation Progress
 
-## Status: ACTIVE — Phase 4 In Progress
+## Status: ACTIVE — Phase 5 In Progress
 
 ## Platforms
 | Platform | Source Repo | Status | Last Update |
 |----------|------------|--------|-------------|
-| Desktop (Win/Mac/Web) | deltachat-desktop | 🔄 Analyzing | 2026-06-14 |
-| Android | deltachat-android | 🔄 Analyzing | 2026-06-14 |
-| iOS | deltachat-ios | 🔄 Analyzing | 2026-06-14 |
-| Web/Pages | deltachat-pages | 🔄 Analyzing | 2026-06-14 |
+| Desktop (Win/Mac/Web) | deltachat-desktop | ✅ Analyzed | 2026-06-14 |
+| Android | deltachat-android | ✅ Analyzed | 2026-06-14 |
+| iOS | deltachat-ios | ✅ Analyzed | 2026-06-14 |
+| Web/Pages | deltachat-pages | ✅ Analyzed | 2026-06-14 |
 
 ## Phases
 - [x] Phase 1: Clone & Setup
-- [x] Phase 2: Codebase Analysis (workflow running)
-- [ ] Phase 3: Feature Matrix (workflow running)
-- [x] Phase 4: Core Architecture (Flutter) — **IN PROGRESS**
-- [ ] Phase 5: Platform Implementation
+- [x] Phase 2: Codebase Analysis
+- [x] Phase 3: Feature Matrix (see `.claude/docs/MASTER_FEATURE_MATRIX.md`)
+- [x] Phase 4: Core Architecture (Flutter)
+- [ ] Phase 5: Platform Implementation — **IN PROGRESS**
 - [ ] Phase 6: Enterprise Features
 - [ ] Phase 7: QA & Documentation
 
-## Phase 4 Checklist
-### Architecture ✅
-- [x] pubspec.yaml — enterprise package stack
-- [x] main.dart — ProviderScope + Firebase + Notifications
-- [x] app.dart — OmegaApp Material3
-- [x] router.dart — go_router full route table
-- [x] theme/colors.dart — OmegaColors brand palette
-- [x] theme/text_styles.dart — Inter font system
-- [x] theme/app_theme.dart — light + dark themes
-- [x] core/constants/app_constants.dart
-- [x] core/constants/route_constants.dart
-- [x] core/errors/failures.dart
-- [x] core/errors/exceptions.dart
-- [x] core/utils/logger.dart
+## Phase 5 Checklist
 
-### Shared Models ✅
-- [x] shared/models/account.dart (freezed)
-- [x] shared/models/chat.dart (freezed)
-- [x] shared/models/message.dart (freezed)
-- [x] shared/models/contact.dart (freezed)
-
-### Shared Services ✅
-- [x] shared/services/notification_service.dart (FCM + local)
-- [x] shared/services/storage_service.dart (secure storage + prefs)
-
-### Shared Widgets
-- [x] shared/widgets/omega_avatar.dart
-- [x] shared/widgets/omega_text_field.dart
-
-### Onboarding ✅
-- [x] features/onboarding/presentation/screens/onboarding_screen.dart
-
-### Auth ✅
-- [x] features/auth/presentation/screens/welcome_screen.dart
-- [x] features/auth/presentation/screens/login_screen.dart
-- [x] features/auth/presentation/screens/account_setup_screen.dart
-
-### Chat List ✅
-- [x] features/chat_list/presentation/screens/chat_list_screen.dart
-
-### Chat ✅
-- [x] features/chat/presentation/screens/chat_screen.dart
-- [x] features/chat/presentation/widgets/message_bubble.dart
-- [x] features/chat/presentation/widgets/chat_input_bar.dart
-- [x] features/chat/presentation/widgets/chat_app_bar.dart
-
-### Contacts ✅
-- [x] features/contacts/presentation/screens/contacts_screen.dart
-- [x] features/contacts/presentation/screens/contact_detail_screen.dart
-
-### Settings ✅
-- [x] features/settings/presentation/screens/settings_screen.dart
-- [x] features/settings/presentation/screens/profile_settings_screen.dart
-- [x] features/settings/presentation/screens/notification_settings_screen.dart
-- [x] features/settings/presentation/screens/privacy_settings_screen.dart
-- [x] features/settings/presentation/screens/advanced_settings_screen.dart
-
-### Media ✅
-- [x] features/media/presentation/screens/media_viewer_screen.dart
-
-## Phase 5 Remaining Checklist
 ### Providers (Riverpod)
-- [ ] auth_provider.dart — login/logout/account state
-- [ ] chat_list_provider.dart — chat list with real-time updates
-- [ ] chat_provider.dart — messages stream
-- [ ] contacts_provider.dart — contacts list
-- [ ] settings_provider.dart — user preferences
+- [x] core/network/delta_rpc_client.dart — DeltaChat JSON-RPC abstraction
+- [x] auth/presentation/providers/auth_provider.dart
+- [x] chat_list/presentation/providers/chat_list_provider.dart
+- [x] chat/presentation/providers/chat_provider.dart
+- [x] contacts/presentation/providers/contacts_provider.dart
+- [x] settings/presentation/providers/settings_provider.dart
+
+### New Screens
+- [x] qr/presentation/screens/qr_scanner_screen.dart
+- [x] qr/presentation/screens/qr_display_screen.dart
+- [x] chat/presentation/screens/group/group_create_screen.dart
 
 ### Data Layer
-- [ ] DeltaChat RPC client integration (FFI)
 - [ ] Isar database schema
-- [ ] Repository implementations
 - [ ] Background sync service
 
-### Features
-- [ ] QR code scanner/generator
-- [ ] Group chat creation
-- [ ] Voice message recording/playback (record + audioplayers)
+### Features Remaining
+- [ ] Voice message recording/playback
 - [ ] File sharing
 - [ ] Image/video sharing
-- [ ] Disappearing messages timer
+- [ ] Disappearing messages timer UI
 - [ ] Message reactions
-- [ ] Message quoting/reply
 - [ ] Message search
 - [ ] Chat search
 - [ ] Contact import from device
 - [ ] Backup/restore flow
 - [ ] WebRTC voice/video calls
 - [ ] Location sharing
-- [ ] Emoji picker
+- [ ] Emoji picker integration
 - [ ] Typing indicators
 - [ ] Message forwarding
 - [ ] Starred messages
 
-### Enterprise
+### Enterprise (Phase 6)
 - [ ] Admin policy screen (MDM)
-- [ ] QR provisioning
+- [ ] QR provisioning flow
 - [ ] Single-account lock
 - [ ] Compliance export
 - [ ] Audit logging
+- [ ] Multi-account switcher
 
 ## Log Files
-- `.claude/logs/iteration-001.md` — Architecture scaffold complete
-- `.claude/logs/desktop.md` — (generated by analysis workflow)
-- `.claude/logs/android.md` — (generated by analysis workflow)
-- `.claude/logs/ios.md` — (generated by analysis workflow)
-- `.claude/logs/pages.md` — (generated by analysis workflow)
+- `.claude/logs/iteration-001.md` — Phase 4: Architecture scaffold
+- `.claude/logs/iteration-002.md` — Phase 5: Providers + QR + Group
+- `.claude/docs/MASTER_FEATURE_MATRIX.md` — Unified feature matrix
 
 ## Notes
 - App name: **Omega** (was: deltachat)
 - Package: `com.omega.messenger`
 - Excluded: Linux
 - Target: Enterprise-grade, Feature-complete
-- Source analysis: workflow `wf_f54bec9c-bf0` still running
