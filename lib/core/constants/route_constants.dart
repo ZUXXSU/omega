@@ -1,0 +1,22 @@
+class RouteConstants {
+  static const String welcome = '/';
+  static const String onboarding = '/onboarding';
+  static const String login = '/login';
+  static const String accountSetup = '/account-setup';
+  static const String chatList = '/chats';
+  static const String chat = '/chats/:chatId';
+  static const String contacts = '/contacts';
+  static const String contactDetail = '/contacts/:contactId';
+  static const String settings = '/settings';
+  static const String profileSettings = '/settings/profile';
+  static const String notificationSettings = '/settings/notifications';
+  static const String privacySettings = '/settings/privacy';
+  static const String advancedSettings = '/settings/advanced';
+  static const String mediaViewer = '/media';
+  static const String qrScanner = '/qr';
+  static const String groupCreate = '/group/create';
+  static const String groupInfo = '/group/:chatId/info';
+  static const String blockedContacts = '/settings/blocked';
+  static const String backupRestore = '/settings/backup';
+  static const String connectivityTest = '/settings/connectivity';
+}
