@@ -6,9 +6,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../features/auth/presentation/screens/welcome_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/account_setup_screen.dart';
+import '../features/auth/presentation/screens/app_lock_screen.dart';
 import '../features/chat_list/presentation/screens/chat_list_screen.dart';
 import '../features/chat/presentation/screens/chat_screen.dart';
 import '../features/chat/presentation/screens/message_search_screen.dart';
+import '../features/chat/presentation/screens/starred_messages_screen.dart';
 import '../features/chat/presentation/screens/group/group_create_screen.dart';
 import '../features/contacts/presentation/screens/contacts_screen.dart';
 import '../features/contacts/presentation/screens/contact_detail_screen.dart';
@@ -17,11 +19,14 @@ import '../features/settings/presentation/screens/profile_settings_screen.dart';
 import '../features/settings/presentation/screens/notification_settings_screen.dart';
 import '../features/settings/presentation/screens/privacy_settings_screen.dart';
 import '../features/settings/presentation/screens/advanced_settings_screen.dart';
+import '../features/settings/presentation/screens/backup_restore_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/media/presentation/screens/media_viewer_screen.dart';
 import '../features/qr/presentation/screens/qr_scanner_screen.dart';
 import '../features/qr/presentation/screens/qr_display_screen.dart';
 import '../features/search/presentation/screens/global_search_screen.dart';
+import '../features/enterprise/presentation/screens/compliance_screen.dart';
+import '../features/enterprise/presentation/screens/provisioning_screen.dart';
 import '../core/constants/route_constants.dart';
 import 'shell_scaffold.dart';
 
@@ -81,6 +86,10 @@ GoRouter router(RouterRef ref) {
                     path: 'group/create',
                     builder: (_, __) => const GroupCreateScreen(),
                   ),
+                  GoRoute(
+                    path: 'starred',
+                    builder: (_, __) => const StarredMessagesScreen(),
+                  ),
                 ],
               ),
             ],
@@ -122,6 +131,7 @@ GoRouter router(RouterRef ref) {
                   GoRoute(path: 'notifications', builder: (_, __) => const NotificationSettingsScreen()),
                   GoRoute(path: 'privacy', builder: (_, __) => const PrivacySettingsScreen()),
                   GoRoute(path: 'advanced', builder: (_, __) => const AdvancedSettingsScreen()),
+                  GoRoute(path: 'backup', builder: (_, __) => const BackupRestoreScreen()),
                 ],
               ),
             ],
@@ -165,6 +175,20 @@ GoRouter router(RouterRef ref) {
       GoRoute(
         path: '/search',
         builder: (_, __) => const GlobalSearchScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.appLock,
+        builder: (_, __) => const AppLockScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.compliance,
+        builder: (_, __) => const ComplianceScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.provisioning,
+        builder: (_, state) => ProvisioningScreen(
+          provisioningUrl: state.uri.queryParameters['url'] ?? '',
+        ),
       ),
     ],
     errorBuilder: (_, state) => Scaffold(

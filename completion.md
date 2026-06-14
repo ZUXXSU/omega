@@ -1,6 +1,6 @@
 # Omega — Implementation Progress
 
-## Status: ACTIVE — Phase 6 In Progress
+## Status: ACTIVE — Phase 7: QA & Documentation
 
 ## Platforms
 | Platform | Source Repo | Status | Last Update |
@@ -16,8 +16,8 @@
 - [x] Phase 3: Feature Matrix (MASTER_FEATURE_MATRIX.md — 1,528 lines)
 - [x] Phase 4: Core Architecture (Flutter)
 - [x] Phase 5: Platform Implementation
-- [ ] Phase 6: Enterprise Features — **IN PROGRESS**
-- [ ] Phase 7: QA & Documentation
+- [x] Phase 6: Enterprise Features — **COMPLETE**
+- [ ] Phase 7: QA & Documentation — **IN PROGRESS**
 
 ## Phase 5 Checklist — COMPLETE ✅
 
@@ -50,23 +50,46 @@
 - [x] Real provider wiring in chat_screen (sendText, loadMore, day seps)
 - [x] Attach menu wired to real pickers (image, video, file)
 
-## Phase 6 Checklist
+## Phase 6 Checklist — COMPLETE ✅
 
-### Enterprise — Started
+### Enterprise — All Complete
 - [x] Admin policy screen (MDM status, all policy groups, audit log)
 - [x] Multi-account switcher
-- [ ] Disappearing messages timer UI
-- [ ] Message forwarding (chat picker)
-- [ ] Starred messages screen
-- [ ] Backup/restore flow
-- [ ] Deep link handler (openpgp4fpr:, dcaccount:, dclogin:)
-- [ ] WebXDC mini-app viewer stub
-- [ ] Background sync service
-- [ ] iOS share extension stub
-- [ ] Android back-button (WillPopScope / PopScope)
-- [ ] Single-account lock enforcement
-- [ ] Compliance export
-- [ ] Audit logging service
+- [x] Disappearing messages timer UI
+- [x] Message forwarding (chat picker)
+- [x] Starred messages screen
+- [x] Backup/restore flow
+- [x] Deep link handler (openpgp4fpr:, dcaccount:, dclogin:)
+- [x] WebXDC mini-app viewer stub
+- [x] Background sync service
+- [x] iOS share extension stub
+- [x] Android back-button (WillPopScope / PopScope)
+- [x] Single-account lock enforcement
+- [x] Compliance export
+- [x] Audit logging service
+
+### Additional Deliverables (CLI-4 + CLI-6)
+- [x] Biometric service (local_auth wrapper)
+- [x] App lock screen (biometric gate)
+- [x] Screen security service (MethodChannel)
+- [x] Connectivity service + banner widget
+- [x] Enterprise provisioning screen (MDM QR flow)
+- [x] Draft service (Isar-backed)
+- [x] Media download service (gallery save, Dio progress)
+- [x] Full documentation (CLAUDE.md, ARCHITECTURE.md, SETUP.md, CONTRIBUTING.md, ENTERPRISE.md)
+
+## Phase 7 Checklist
+
+### QA & Documentation — IN PROGRESS
+- [ ] Run build_runner to regenerate all .g.dart files
+- [ ] Wire AppLinksService into root widget initState
+- [ ] Wire OmegaConnectivityWrapper into MaterialApp
+- [ ] Wire AppLockScreen router redirect guard
+- [ ] Native Android MethodChannel for screen security (MainActivity.kt)
+- [ ] Native iOS AppDelegate.swift for screen security
+- [ ] Integration tests: all 16 routes, deep links, biometric, provisioning
+- [ ] Performance profiling: pagination, Isar queries, background isolate
+- [ ] Store submission: App Store Connect + Google Play Console
 
 ## Log Files
 - .claude/logs/iteration-001.md — Phase 4: Architecture scaffold

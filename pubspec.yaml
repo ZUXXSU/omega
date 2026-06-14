@@ -67,6 +67,21 @@ dependencies:
   shared_preferences: ^2.3.4
   image_cropper: ^8.0.2
 
+  # Deep links
+  app_links: ^6.3.3
+
+  # Background sync
+  workmanager: ^0.5.2
+
+  # Biometric auth
+  local_auth: ^2.3.0
+
+  # WebXDC viewer
+  webview_flutter: ^4.10.0
+
+  # Markdown rendering
+  flutter_markdown: ^0.7.7
+
   # UI
   flutter_svg: ^2.0.17
   lottie: ^3.3.1
