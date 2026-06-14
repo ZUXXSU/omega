@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../features/auth/presentation/providers/auth_provider.dart';
 import '../features/auth/presentation/screens/welcome_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/account_setup_screen.dart';
 import '../features/auth/presentation/screens/app_lock_screen.dart';
+import '../features/settings/presentation/providers/settings_provider.dart';
+import '../shared/services/storage_service.dart';
 import '../features/chat_list/presentation/screens/chat_list_screen.dart';
 import '../features/chat/presentation/screens/chat_screen.dart';
 import '../features/chat/presentation/screens/message_search_screen.dart';
@@ -34,9 +37,51 @@ part 'router.g.dart';
 
 @riverpod
 GoRouter router(RouterRef ref) {
+  final authState = ref.watch(authProvider);
+  final settings  = ref.watch(settingsProvider);
+
   return GoRouter(
     initialLocation: RouteConstants.welcome,
     debugLogDiagnostics: false,
+    redirect: (context, state) {
+      final path = state.matchedLocation;
+      final isOnAuth = path == RouteConstants.welcome ||
+          path == RouteConstants.onboarding ||
+          path == RouteConstants.login ||
+          path == RouteConstants.accountSetup ||
+          path == RouteConstants.provisioning;
+
+      // Provisioning takes priority
+      if (path == RouteConstants.provisioning) return null;
+
+      // Not yet checked auth — stay on welcome
+      if (authState.status == AuthStatus.unknown) {
+        return isOnAuth ? null : RouteConstants.welcome;
+      }
+
+      // Unauthenticated → send to welcome
+      if (authState.status == AuthStatus.unauthenticated ||
+          authState.status == AuthStatus.error) {
+        return isOnAuth ? null : RouteConstants.welcome;
+      }
+
+      // Authenticated but on auth screen → send to chats
+      if (authState.status == AuthStatus.authenticated && isOnAuth) {
+        return RouteConstants.chatList;
+      }
+
+      // Biometric lock — if enabled and not on lock screen, redirect
+      if (settings.biometricLock &&
+          path != RouteConstants.appLock &&
+          !isOnAuth) {
+        // Only redirect once per session — StorageService tracks unlock state
+        if (!StorageService.getBool('session_unlocked')) {
+          return RouteConstants.appLock;
+        }
+      }
+
+      return null;
+    },
     routes: [
       // ── Unauthenticated ────────────────────────────────────────────────
       GoRoute(

@@ -6,12 +6,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'app/app.dart';
 import 'core/utils/logger.dart';
 import 'shared/services/notification_service.dart';
+import 'shared/services/storage_service.dart';
+import 'shared/services/background_sync_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  AppLogger.init();
+
+  await Future.wait([
+    Firebase.initializeApp(),
+    StorageService.initialize(),
+  ]);
+
   await NotificationService.initialize();
+  await BackgroundSyncService.initialize();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -20,11 +29,5 @@ void main() async {
     DeviceOrientation.landscapeRight,
   ]);
 
-  AppLogger.init();
-
-  runApp(
-    const ProviderScope(
-      child: OmegaApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: OmegaApp()));
 }

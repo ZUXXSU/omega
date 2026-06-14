@@ -45,5 +45,43 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Deep link URL schemes -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.omega.messenger</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>openpgp4fpr</string>
+				<string>dcaccount</string>
+				<string>dclogin</string>
+				<string>DCBACKUP</string>
+				<string>mailto</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- Camera / microphone / photo library usage descriptions -->
+	<key>NSCameraUsageDescription</key>
+	<string>Omega needs camera access to scan QR codes and send photos.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Omega needs microphone access to record voice messages.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Omega needs photo library access to send images and videos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Omega needs permission to save media to your photo library.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Omega uses Face ID to keep your messages secure.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Omega can import contacts to make it easier to start conversations.</string>
+
+	<!-- Background fetch for push notifications -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
