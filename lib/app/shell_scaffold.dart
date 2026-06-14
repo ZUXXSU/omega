@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../app/theme/colors.dart';
-import '../app/theme/text_styles.dart';
+
 import '../features/chat_list/presentation/providers/chat_list_provider.dart';
 
 class ShellScaffold extends ConsumerWidget {

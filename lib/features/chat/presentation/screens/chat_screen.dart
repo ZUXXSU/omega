@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../app/theme/colors.dart';
 import '../../../../app/theme/text_styles.dart';
-import '../../../../shared/models/message.dart';
-import '../../../../shared/widgets/omega_avatar.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input_bar.dart';
@@ -144,7 +141,6 @@ class _MessageList extends ConsumerWidget {
         itemBuilder: (context, i) {
           final msg = messages[i];
           final nextMsg = i < messages.length - 1 ? messages[i + 1] : null;
-          final prevMsg = i > 0 ? messages[i - 1] : null;
 
           final showDaySep = nextMsg == null ||
               !_sameDay(msg.timestamp, nextMsg.timestamp);
@@ -193,46 +189,3 @@ class _EmptyChatState extends StatelessWidget {
   }
 }
 
-// Temp mock
-final _mockMessages = [
-  Message(
-    id: 1,
-    chatId: 1,
-    fromContactId: 0,
-    type: MessageType.text,
-    state: MessageState.read,
-    text: 'Hey! Are you coming to the meeting tomorrow?',
-    timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
-    isOutgoing: true,
-  ),
-  Message(
-    id: 2,
-    chatId: 1,
-    fromContactId: 1,
-    type: MessageType.text,
-    state: MessageState.delivered,
-    text: 'Yes, definitely! What time does it start?',
-    timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
-    isOutgoing: false,
-  ),
-  Message(
-    id: 3,
-    chatId: 1,
-    fromContactId: 0,
-    type: MessageType.text,
-    state: MessageState.read,
-    text: '10am. I\'ll send the agenda shortly.',
-    timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
-    isOutgoing: true,
-  ),
-  Message(
-    id: 4,
-    chatId: 1,
-    fromContactId: 1,
-    type: MessageType.text,
-    state: MessageState.delivered,
-    text: 'Perfect, see you tomorrow! 🎉',
-    timestamp: DateTime.now().subtract(const Duration(minutes: 3)),
-    isOutgoing: false,
-  ),
-];

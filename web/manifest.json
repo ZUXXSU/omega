@@ -1,11 +1,11 @@
 {
-    "name": "omega",
-    "short_name": "omega",
-    "start_url": ".",
+    "name": "Omega",
+    "short_name": "Omega",
+    "start_url": "/",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0F0F1A",
+    "theme_color": "#2B5BE8",
+    "description": "Omega — Enterprise secure messenger",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

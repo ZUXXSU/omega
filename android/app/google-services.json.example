@@ -1,0 +1,66 @@
+{
+  "project_info": {
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:YOUR_PROJECT_NUMBER:android:YOUR_APP_ID_HASH",
+        "android_client_info": {
+          "package_name": "com.yourcompany.omega"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "YOUR_PROJECT_NUMBER-YOUR_CLIENT_HASH.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "YOUR_ANDROID_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "YOUR_PROJECT_NUMBER-YOUR_CLIENT_HASH.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+
+/* ============================================================
+   HOW TO REPLACE PLACEHOLDER VALUES
+   ============================================================
+
+   1. Go to https://console.firebase.google.com/
+   2. Select your Firebase project (or create one).
+   3. Click the gear icon -> "Project settings".
+   4. Under "Your apps", click the Android app (or add one with
+      your package name, e.g. com.yourcompany.omega).
+   5. Click "Download google-services.json".
+   6. Copy the downloaded file to:
+         android/app/google-services.json
+      (the file WITHOUT the .example suffix).
+
+   NEVER commit google-services.json to version control.
+   It is already listed in .gitignore.
+
+   Values to locate in Firebase Console:
+   - project_number  -> Project settings -> General -> Project number
+   - project_id      -> Project settings -> General -> Project ID
+   - storage_bucket  -> Project settings -> General -> Default Storage bucket
+   - mobilesdk_app_id -> Shown in the Android app card after registration
+   - package_name    -> Must match applicationId in android/app/build.gradle.kts
+   - current_key     -> Automatically generated; included in the downloaded file
+
+   ============================================================ */

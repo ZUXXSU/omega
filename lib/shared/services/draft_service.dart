@@ -1,4 +1,4 @@
-import '../database/isar_schema.dart';
+import '../database/omega_database.dart';
 
 /// Result returned by [DraftService.getDraft].
 class DraftResult {
@@ -63,7 +63,8 @@ class DraftService {
       return;
     }
 
-    await OmegaDatabase.saveDraft(
+    final db = await OmegaDatabase.getInstance();
+    await db.saveDraft(
       accountId,
       chatId,
       trimmed,
@@ -76,14 +77,15 @@ class DraftService {
   ///
   /// Returns `null` if no draft exists.
   Future<DraftResult?> getDraft(int accountId, int chatId) async {
-    final isarDraft = await OmegaDatabase.getDraft(accountId, chatId);
-    if (isarDraft == null) return null;
+    final db = await OmegaDatabase.getInstance();
+    final row = await db.getDraft(accountId, chatId);
+    if (row == null) return null;
 
     return DraftResult(
-      text: isarDraft.text,
-      quotedMessageId: isarDraft.quotedMessageId,
-      quotedText: isarDraft.quotedText,
-      savedAt: isarDraft.savedAt,
+      text: row['text'] as String,
+      quotedMessageId: row['quoted_message_id'] as int?,
+      quotedText: row['quoted_text'] as String?,
+      savedAt: OmegaDatabase.msToDateTime(row['saved_at'] as int?),
     );
   }
 
@@ -91,7 +93,8 @@ class DraftService {
   ///
   /// Should be called after a message is successfully sent.
   Future<void> clearDraft(int accountId, int chatId) async {
-    await OmegaDatabase.clearDraft(accountId, chatId);
+    final db = await OmegaDatabase.getInstance();
+    await db.clearDraft(accountId, chatId);
   }
 
   // ── Convenience helpers ───────────────────────────────────────────────────
@@ -137,14 +140,8 @@ class DraftService {
 
   /// Clear all drafts for a given account (e.g. on logout).
   Future<void> clearAllDraftsForAccount(int accountId) async {
-    final db = await OmegaDatabase.instance;
-    await db.writeTxn(() async {
-      await db.isarDrafts
-          .where()
-          .filter()
-          .accountIdEqualTo(accountId)
-          .deleteAll();
-    });
+    final db = await OmegaDatabase.getInstance();
+    await db.clearDraftsForAccount(accountId);
   }
 
   /// Returns the draft text (or empty string) — a convenience shorthand

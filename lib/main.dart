@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'app/app.dart';
 import 'core/utils/logger.dart';
+import 'shared/database/omega_database.dart';
 import 'shared/services/notification_service.dart';
 import 'shared/services/storage_service.dart';
 import 'shared/services/background_sync_service.dart';
@@ -18,6 +19,8 @@ void main() async {
     Firebase.initializeApp(),
     StorageService.initialize(),
   ]);
+
+  await OmegaDatabase.getInstance();
 
   await NotificationService.initialize();
   await BackgroundSyncService.initialize();

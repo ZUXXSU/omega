@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  ============================================================
+  HOW TO REPLACE PLACEHOLDER VALUES
+  ============================================================
+
+  1. Go to https://console.firebase.google.com/
+  2. Select your Firebase project (or create one).
+  3. Click the gear icon -> "Project settings".
+  4. Under "Your apps", click the iOS app (or add one with
+     your Bundle ID, e.g. com.yourcompany.omega).
+  5. Click "Download GoogleService-Info.plist".
+  6. Copy the downloaded file to:
+         ios/Runner/GoogleService-Info.plist
+     (the file WITHOUT the .example suffix).
+
+  NEVER commit GoogleService-Info.plist to version control.
+  It is already listed in .gitignore.
+
+  Values to locate in Firebase Console:
+  - PROJECT_ID       -> Project settings -> General -> Project ID
+  - BUNDLE_ID        -> Must match the Bundle Identifier in Xcode
+  - API_KEY          -> Automatically generated; included in the downloaded file
+  - CLIENT_ID        -> OAuth 2.0 client ID for iOS
+  - REVERSED_CLIENT_ID -> Reverse-DNS form of CLIENT_ID (used for URL scheme)
+  - GCM_SENDER_ID    -> Same as project_number in google-services.json
+  - STORAGE_BUCKET   -> Project settings -> General -> Default Storage bucket
+  - GOOGLE_APP_ID    -> Shown in the iOS app card after registration
+
+  After placing the real file, open Xcode and verify that
+  GoogleService-Info.plist is listed in the Runner target's
+  "Copy Bundle Resources" build phase.
+  ============================================================
+-->
+<plist version="1.0">
+<dict>
+  <key>CLIENT_ID</key>
+  <string>YOUR_PROJECT_NUMBER-YOUR_CLIENT_HASH.apps.googleusercontent.com</string>
+
+  <key>REVERSED_CLIENT_ID</key>
+  <string>com.googleusercontent.apps.YOUR_PROJECT_NUMBER-YOUR_CLIENT_HASH</string>
+
+  <key>API_KEY</key>
+  <string>YOUR_IOS_API_KEY</string>
+
+  <key>GCM_SENDER_ID</key>
+  <string>YOUR_PROJECT_NUMBER</string>
+
+  <key>PLIST_VERSION</key>
+  <string>1</string>
+
+  <key>BUNDLE_ID</key>
+  <string>com.yourcompany.omega</string>
+
+  <key>PROJECT_ID</key>
+  <string>YOUR_PROJECT_ID</string>
+
+  <key>STORAGE_BUCKET</key>
+  <string>YOUR_PROJECT_ID.appspot.com</string>
+
+  <key>IS_ADS_ENABLED</key>
+  <false/>
+
+  <key>IS_ANALYTICS_ENABLED</key>
+  <false/>
+
+  <key>IS_APPINVITE_ENABLED</key>
+  <true/>
+
+  <key>IS_GCM_ENABLED</key>
+  <true/>
+
+  <key>IS_SIGNIN_ENABLED</key>
+  <true/>
+
+  <key>GOOGLE_APP_ID</key>
+  <string>1:YOUR_PROJECT_NUMBER:ios:YOUR_APP_ID_HASH</string>
+</dict>
+</plist>

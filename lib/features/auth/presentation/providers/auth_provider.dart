@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/delta_rpc_client.dart';
 import '../../../../shared/models/account.dart';

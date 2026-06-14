@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:dio/dio.dart';
+
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../utils/logger.dart';
-import '../errors/exceptions.dart';
+
 
 part 'delta_rpc_client.g.dart';
 

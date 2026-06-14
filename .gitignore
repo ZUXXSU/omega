@@ -43,3 +43,26 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android signing
+android/keystore.jks
+android/key.properties
+keystore.jks
+key.properties
+
+# Firebase / Google Services (real credentials — use *.example files as reference)
+google-services.json
+GoogleService-Info.plist
+
+# Dart code generation artifacts
+*.g.dart
+*.freezed.dart
+
+# Environment variables
+.env
+.env.*
+
+# Lock files — keep pubspec.lock, ignore others
+# pubspec.lock is intentionally NOT ignored (pinned deps for reproducible builds)
+yarn.lock
+package-lock.json

@@ -251,7 +251,7 @@ class _AttachMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = [
+    final List<(IconData, String, Color, VoidCallback)> items = [
       (Icons.image_outlined, 'Gallery', OmegaColors.secondary, onGallery),
       (Icons.camera_alt_outlined, 'Camera', Colors.red, onCamera),
       (Icons.videocam_outlined, 'Video', Colors.purple, onVideo),
@@ -278,11 +278,11 @@ class _AttachMenu extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: (item.$3 as Color).withOpacity(0.1),
-                    child: Icon(item.$1 as IconData, color: item.$3 as Color),
+                    backgroundColor: item.$3.withOpacity(0.1),
+                    child: Icon(item.$1, color: item.$3),
                   ),
                   const SizedBox(height: 8),
-                  Text(item.$2 as String, style: OmegaTextStyles.labelSmall),
+                  Text(item.$2, style: OmegaTextStyles.labelSmall),
                 ],
               ),
             );
