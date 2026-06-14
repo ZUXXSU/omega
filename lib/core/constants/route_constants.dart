@@ -19,4 +19,11 @@ class RouteConstants {
   static const String blockedContacts = '/settings/blocked';
   static const String backupRestore = '/settings/backup';
   static const String connectivityTest = '/settings/connectivity';
+  static const String globalSearch = '/search';
+  static const String starredMessages = '/chats/starred';
+  static const String appLock = '/lock';
+  static const String compliance = '/compliance';
+  static const String provisioning = '/provisioning';
+  static const String adminPolicy = '/settings/admin-policy';
+  static const String multiAccount = '/accounts';
 }

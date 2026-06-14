@@ -8,6 +8,7 @@ import '../../../../app/theme/text_styles.dart';
 import '../../../../core/constants/route_constants.dart';
 import '../../../../shared/models/chat.dart';
 import '../../../../shared/widgets/omega_avatar.dart';
+import '../../presentation/providers/chat_list_provider.dart';
 
 class ChatListScreen extends ConsumerWidget {
   const ChatListScreen({super.key});
@@ -20,7 +21,7 @@ class ChatListScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search_rounded),
-            onPressed: () {},
+            onPressed: () => context.go(RouteConstants.globalSearch),
             tooltip: 'Search',
           ),
           IconButton(
@@ -52,12 +53,62 @@ class _ChatListBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: wire to real provider
-    return ListView(
-      children: [
-        const _ArchivedBanner(count: 2),
-        ..._mockChats.map((chat) => _ChatTile(chat: chat)),
-      ],
+    final state = ref.watch(chatListProvider);
+
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (state.error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline_rounded, size: 48, color: OmegaColors.error),
+            const SizedBox(height: 12),
+            Text(state.error!, style: const TextStyle(color: OmegaColors.error)),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => ref.read(chatListProvider.notifier).refresh(),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(chatListProvider.notifier).refresh(),
+      child: ListView(
+        children: [
+          if (state.archivedChats.isNotEmpty)
+            _ArchivedBanner(count: state.archivedChats.length),
+          if (state.chats.isEmpty)
+            const _EmptyChatList()
+          else
+            ...state.chats.map((chat) => _ChatTile(chat: chat)),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyChatList extends StatelessWidget {
+  const _EmptyChatList();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 80),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.chat_bubble_outline_rounded, size: 72, color: OmegaColors.textDisabled),
+          const SizedBox(height: 16),
+          Text('No chats yet', style: OmegaTextStyles.titleMedium.copyWith(color: OmegaColors.textSecondary)),
+          const SizedBox(height: 8),
+          Text('Start a conversation by tapping +', style: OmegaTextStyles.bodySmall.copyWith(color: OmegaColors.textDisabled)),
+        ],
+      ),
     );
   }
 }
@@ -162,35 +213,60 @@ class _ChatTile extends StatelessWidget {
   }
 }
 
-class _ChatOptions extends StatelessWidget {
+class _ChatOptions extends ConsumerWidget {
   final Chat chat;
   const _ChatOptions({required this.chat});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(chatListProvider.notifier);
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            leading: const Icon(Icons.push_pin_outlined),
+            leading: Icon(chat.visibility == ChatVisibility.pinned ? Icons.push_pin_outlined : Icons.push_pin),
             title: Text(chat.visibility == ChatVisibility.pinned ? 'Unpin' : 'Pin'),
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              chat.visibility == ChatVisibility.pinned
+                  ? notifier.unpinChat(chat.id)
+                  : notifier.pinChat(chat.id);
+            },
           ),
           ListTile(
             leading: Icon(chat.isMuted ? Icons.volume_up_outlined : Icons.volume_off_outlined),
             title: Text(chat.isMuted ? 'Unmute' : 'Mute'),
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              chat.isMuted
+                  ? notifier.unmuteChat(chat.id)
+                  : notifier.muteChat(chat.id, 0); // 0 = forever
+            },
           ),
           ListTile(
             leading: const Icon(Icons.archive_outlined),
             title: const Text('Archive'),
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              notifier.archiveChat(chat.id);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.mark_chat_read_outlined),
+            title: const Text('Mark as read'),
+            onTap: () {
+              Navigator.pop(context);
+              notifier.markRead(chat.id);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.delete_outline_rounded, color: OmegaColors.error),
             title: const Text('Delete', style: TextStyle(color: OmegaColors.error)),
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              notifier.deleteChat(chat.id);
+            },
           ),
         ],
       ),
@@ -210,12 +286,18 @@ class _ChatListMenu extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.group_add_outlined),
             title: const Text('New Group'),
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              context.go('/chats/group/create');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.qr_code_rounded),
-            title: const Text('Show QR Code'),
-            onTap: () => Navigator.pop(context),
+            title: const Text('My QR Code'),
+            onTap: () {
+              Navigator.pop(context);
+              context.go('/qr-display');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.settings_outlined),
@@ -231,33 +313,3 @@ class _ChatListMenu extends StatelessWidget {
   }
 }
 
-// Temporary mock data until real provider is wired
-final _mockChats = [
-  Chat(
-    id: 1,
-    name: 'Alice Johnson',
-    type: ChatType.single,
-    visibility: ChatVisibility.pinned,
-    lastMessage: 'See you tomorrow!',
-    lastMessageTime: DateTime.now().subtract(const Duration(minutes: 3)),
-    unreadCount: 2,
-    isVerified: true,
-  ),
-  Chat(
-    id: 2,
-    name: 'Engineering Team',
-    type: ChatType.group,
-    lastMessage: 'Bob: Deploy is ready',
-    lastMessageTime: DateTime.now().subtract(const Duration(hours: 1)),
-    unreadCount: 5,
-    memberIds: [1, 2, 3, 4],
-  ),
-  Chat(
-    id: 3,
-    name: 'Bob Smith',
-    type: ChatType.single,
-    lastMessage: 'Thanks!',
-    lastMessageTime: DateTime.now().subtract(const Duration(hours: 3)),
-    isMuted: true,
-  ),
-];
