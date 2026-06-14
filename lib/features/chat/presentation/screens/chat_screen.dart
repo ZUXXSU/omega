@@ -6,9 +6,12 @@ import '../../../../app/theme/colors.dart';
 import '../../../../app/theme/text_styles.dart';
 import '../../../../shared/models/message.dart';
 import '../../../../shared/widgets/omega_avatar.dart';
+import '../providers/chat_provider.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input_bar.dart';
 import '../widgets/chat_app_bar.dart';
+import '../widgets/typing_indicator.dart';
+import '../widgets/day_separator.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final int chatId;
@@ -57,7 +60,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Future<void> _sendMessage(String text) async {
     if (text.trim().isEmpty) return;
     _inputController.clear();
-    // TODO: dispatch send message action via provider
+    await ref.read(chatMessagesProvider(widget.chatId).notifier).sendText(text);
   }
 
   @override
@@ -72,6 +75,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 _MessageList(
                   chatId: widget.chatId,
                   scrollController: _scrollController,
+                ),
+                const Positioned(
+                  bottom: 0, left: 0, right: 0,
+                  child: TypingIndicator(typingNames: []),
                 ),
                 if (_showScrollToBottom)
                   Positioned(
@@ -108,31 +115,59 @@ class _MessageList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: wire to real messages provider
-    final messages = _mockMessages;
+    final state = ref.watch(chatMessagesProvider(chatId));
 
-    if (messages.isEmpty) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (state.error != null) {
+      return Center(child: Text('Error: ${state.error}', style: const TextStyle(color: OmegaColors.error)));
+    }
+    if (state.messages.isEmpty) {
       return const _EmptyChatState();
     }
 
-    return ListView.builder(
-      controller: scrollController,
-      reverse: true,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      itemCount: messages.length,
-      itemBuilder: (context, i) {
-        final msg = messages[i];
-        final prevMsg = i < messages.length - 1 ? messages[i + 1] : null;
-        final showAvatar = !msg.isOutgoing &&
-            (prevMsg == null || prevMsg.fromContactId != msg.fromContactId);
+    final messages = state.messages;
 
-        return MessageBubble(
-          message: msg,
-          showAvatar: showAvatar,
-        );
+    return NotificationListener<ScrollNotification>(
+      onNotification: (n) {
+        if (n is ScrollEndNotification && scrollController.position.extentAfter < 200) {
+          ref.read(chatMessagesProvider(chatId).notifier).loadMore();
+        }
+        return false;
       },
+      child: ListView.builder(
+        controller: scrollController,
+        reverse: true,
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 48),
+        itemCount: messages.length,
+        itemBuilder: (context, i) {
+          final msg = messages[i];
+          final nextMsg = i < messages.length - 1 ? messages[i + 1] : null;
+          final prevMsg = i > 0 ? messages[i - 1] : null;
+
+          final showDaySep = nextMsg == null ||
+              !_sameDay(msg.timestamp, nextMsg.timestamp);
+          final showAvatar = !msg.isOutgoing &&
+              (nextMsg == null || nextMsg.fromContactId != msg.fromContactId);
+
+          if (msg.isInfo) {
+            return SystemInfoMessage(text: msg.text ?? '');
+          }
+
+          return Column(
+            children: [
+              if (showDaySep) DaySeparator(date: msg.timestamp),
+              MessageBubble(message: msg, showAvatar: showAvatar),
+            ],
+          );
+        },
+      ),
     );
   }
+
+  bool _sameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
 class _EmptyChatState extends StatelessWidget {

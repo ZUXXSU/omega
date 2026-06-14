@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 import '../../../../../app/theme/colors.dart';
 import '../../../../../app/theme/text_styles.dart';
+import '../providers/chat_provider.dart';
+import 'voice_message_widget.dart';
 
 class ChatInputBar extends ConsumerStatefulWidget {
   final TextEditingController controller;
@@ -25,6 +29,7 @@ class ChatInputBar extends ConsumerStatefulWidget {
 class _ChatInputBarState extends ConsumerState<ChatInputBar> {
   bool _hasText = false;
   bool _isRecording = false;
+  final _imagePicker = ImagePicker();
 
   @override
   void initState() {
@@ -44,6 +49,13 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isRecording) {
+      return VoiceRecorderWidget(
+        onFinished: _onVoiceFinished,
+        onCancel: () => setState(() => _isRecording = false),
+      );
+    }
+
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: SafeArea(
@@ -123,7 +135,12 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
   void _showAttachMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (ctx) => const _AttachMenu(),
+      builder: (ctx) => _AttachMenu(
+        onGallery: () => _pickImage(ImageSource.gallery),
+        onCamera: () => _pickImage(ImageSource.camera),
+        onVideo: _pickVideo,
+        onFile: _pickFile,
+      ),
     );
   }
 
@@ -133,7 +150,40 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
 
   void _toggleRecording() {
     setState(() => _isRecording = !_isRecording);
-    // TODO: integrate record package
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    Navigator.pop(context);
+    final picked = await _imagePicker.pickImage(source: source, imageQuality: 80);
+    if (picked != null) {
+      await ref.read(chatMessagesProvider(widget.chatId).notifier)
+          .sendFile(filePath: picked.path, mimeType: 'image/jpeg');
+    }
+  }
+
+  Future<void> _pickVideo() async {
+    Navigator.pop(context);
+    final picked = await _imagePicker.pickVideo(source: ImageSource.gallery);
+    if (picked != null) {
+      await ref.read(chatMessagesProvider(widget.chatId).notifier)
+          .sendFile(filePath: picked.path, mimeType: 'video/mp4');
+    }
+  }
+
+  Future<void> _pickFile() async {
+    Navigator.pop(context);
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    if (result != null && result.files.single.path != null) {
+      final f = result.files.single;
+      await ref.read(chatMessagesProvider(widget.chatId).notifier)
+          .sendFile(filePath: f.path!, mimeType: f.extension != null ? 'application/${f.extension}' : 'application/octet-stream', caption: f.name);
+    }
+  }
+
+  Future<void> _onVoiceFinished(String path, int durationMs) async {
+    setState(() => _isRecording = false);
+    await ref.read(chatMessagesProvider(widget.chatId).notifier)
+        .sendFile(filePath: path, mimeType: 'audio/aac');
   }
 }
 
@@ -187,17 +237,27 @@ class _VoiceButton extends StatelessWidget {
 }
 
 class _AttachMenu extends StatelessWidget {
-  const _AttachMenu();
+  final VoidCallback onGallery;
+  final VoidCallback onCamera;
+  final VoidCallback onVideo;
+  final VoidCallback onFile;
+
+  const _AttachMenu({
+    required this.onGallery,
+    required this.onCamera,
+    required this.onVideo,
+    required this.onFile,
+  });
 
   @override
   Widget build(BuildContext context) {
     final items = [
-      (Icons.image_outlined, 'Gallery', OmegaColors.secondary),
-      (Icons.camera_alt_outlined, 'Camera', Colors.red),
-      (Icons.insert_drive_file_outlined, 'Document', Colors.blue),
-      (Icons.location_on_outlined, 'Location', Colors.orange),
-      (Icons.contact_page_outlined, 'Contact', Colors.purple),
-      (Icons.gif_box_outlined, 'GIF', Colors.pink),
+      (Icons.image_outlined, 'Gallery', OmegaColors.secondary, onGallery),
+      (Icons.camera_alt_outlined, 'Camera', Colors.red, onCamera),
+      (Icons.videocam_outlined, 'Video', Colors.purple, onVideo),
+      (Icons.insert_drive_file_outlined, 'Document', Colors.blue, onFile),
+      (Icons.location_on_outlined, 'Location', Colors.orange, () => Navigator.pop(context)),
+      (Icons.contact_page_outlined, 'Contact', Colors.teal, () => Navigator.pop(context)),
     ];
 
     return SafeArea(
@@ -211,18 +271,18 @@ class _AttachMenu extends StatelessWidget {
           childAspectRatio: 1.2,
           children: items.map((item) {
             return InkWell(
-              onTap: () => Navigator.pop(context),
+              onTap: item.$4,
               borderRadius: BorderRadius.circular(12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: item.$3.withOpacity(0.1),
-                    child: Icon(item.$1, color: item.$3),
+                    backgroundColor: (item.$3 as Color).withOpacity(0.1),
+                    child: Icon(item.$1 as IconData, color: item.$3 as Color),
                   ),
                   const SizedBox(height: 8),
-                  Text(item.$2, style: OmegaTextStyles.labelSmall),
+                  Text(item.$2 as String, style: OmegaTextStyles.labelSmall),
                 ],
               ),
             );
